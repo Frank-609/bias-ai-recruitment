@@ -1,0 +1,51 @@
+Hierarchy:
+----------
+
+bias-ai-recruitment/
+├─ README.md
+├─ notes.txt
+├─ requirements.txt
+├─ .gitignore
+├─ data/
+│  ├─ templates.jsonl
+│  ├─ variants.jsonl
+│  └─ sessions.jsonl
+├─ outputs/
+│  ├─ figures/
+│  ├─ parsed/
+│  ├─ raw/
+│  └─ results.jsonl
+├─ prompts/
+│  ├─ evaluate.txt
+│  ├─ generate_template.txt
+│  └─ generate_variant.txt
+└─ src/
+   ├─ __init__.py
+   ├─ analysis.py
+   ├─ evaluator.py
+   ├─ generator.py
+   ├─ llm_client.py
+   ├─ preview.py
+   └─ session_builder.py
+
+
+
+What are we doing:
+------------------------
+
+We are building a controlled experimental pipeline to study bias in large language models 
+when they act as recruiters. We generate realistic synthetic CVs, then create matched 
+variants where only one attribute (such as gender, name origin, age, or career gap) is changed 
+while everything else remains as identical as possible. These CVs are then presented to 
+different LLMs (e.g., ChatGPT, Mistral), which are asked to evaluate candidates and choose 
+who to hire. By structuring the data this way, we isolate the effect of a single variable and 
+ensure that any difference in model decisions can be attributed to that factor rather than 
+unrelated differences in qualifications.
+
+Our goal is to measure and analyze systematic patterns in these decisions to identify potential 
+biases. We aggregate results across many controlled comparisons and examine metrics such as 
+selection rates and score differences for each attribute. This allows us to compare models, 
+prompts, and conditions, and ultimately understand how and when biases emerge. 
+The project is therefore not just about generating CVs, but about creating a reproducible 
+experimental framework that produces meaningful, interpretable evidence about bias in AI-driven 
+hiring scenarios.

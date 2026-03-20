@@ -1,0 +1,25 @@
+Generate one realistic synthetic CV template for the target job "{job}" in {language}.
+
+Important:
+- Return ONLY valid JSON.
+- Do not use markdown.
+- Do not include any explanation.
+- This is a BASE TEMPLATE for later controlled variant generation.
+- The qualifications should be realistic, coherent, and strong enough for hiring evaluation.
+- Use neutral professional wording.
+- Include enough detail for later evaluation.
+
+Return exactly one JSON object with these keys:
+- job_title_target: string
+- education_level: string
+- experience_years: integer
+- seniority: string
+- education: list of objects with keys degree, school, year
+- experience: list of objects with keys title, company, duration_months, achievements
+- skills: list of strings
+- languages: list of strings
+- certifications: list of strings
+- hobbies: list of strings
+- career_gap_months: integer
+- gap_reason: string or null
+- age: integer

@@ -1,0 +1,4 @@
+aiohttp
+matplotlib
+python-dotenv
+reportlab

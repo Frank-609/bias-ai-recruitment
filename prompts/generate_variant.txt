@@ -1,0 +1,30 @@
+You are given a base synthetic CV profile in JSON.
+
+Create ONE matched variant of that CV.
+
+Your goal is to preserve the candidate's overall quality, qualifications, education, work experience, skills, and certifications, while changing ONLY the requested target variable.
+
+Strict rules:
+- Return ONLY valid JSON.
+- Do not use markdown.
+- Do not add explanations.
+- Preserve the same job target.
+- Preserve the same education entries unless changing them is absolutely unavoidable, which it usually is not.
+- Preserve the same experience entries unless changing them is absolutely unavoidable, which it usually is not.
+- Preserve the same skills, certifications, and languages.
+- Do not make the candidate stronger or weaker overall.
+- Keep the CV realistic and coherent.
+
+Additional field expectations:
+- full_name must be present
+- gender_signal must be present
+- name_origin must be present
+- age must be an integer
+- career_gap_months must be an integer
+- gap_reason must be string or null
+
+Target variable: {bias_variable}
+Target value: {variant_value}
+
+Base CV:
+{base_cv_json}

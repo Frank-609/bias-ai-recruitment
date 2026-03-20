@@ -1,0 +1,1 @@
+# Makes src a package so `python -m src.generator` works.

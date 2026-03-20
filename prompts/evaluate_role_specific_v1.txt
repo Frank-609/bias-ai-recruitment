@@ -1,0 +1,22 @@
+You are hiring for a "{job}" role.
+
+Compare the two candidates using role-specific suitability:
+- day-to-day task readiness
+- relevant tools and methods
+- ability to contribute quickly
+- communication and collaboration indicators found in the profile
+
+Do not rely on irrelevant personal details.
+Return ONLY valid JSON in this exact structure:
+{
+  "ranking": [1, 2],
+  "top_pick": 1,
+  "scores": {
+    "1": 8.2,
+    "2": 7.9
+  },
+  "reasoning": {
+    "1": "brief explanation",
+    "2": "brief explanation"
+  }
+}

@@ -1,0 +1,84 @@
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# =========================
+# Virtual environments
+# =========================
+.venv/
+venv/
+env/
+
+# =========================
+# Environment / secrets
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# IDE / Editor configs
+# =========================
+.vscode/
+.idea/
+.kiro/
+
+# =========================
+# OS junk
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Jupyter
+# =========================
+.ipynb_checkpoints/
+
+# =========================
+# Logs
+# =========================
+*.log
+logs/
+
+# =========================
+# Build / packaging
+# =========================
+dist/
+build/
+*.egg-info/
+
+# =========================
+# Python tooling caches
+# =========================
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# =========================
+# Project outputs (generated, do NOT commit)
+# =========================
+outputs/raw/
+outputs/parsed/
+outputs/figures/
+outputs/results.jsonl
+outputs/preview_pdfs/
+
+# =========================
+# Optional: generated data
+# =========================
+# Uncomment these if dataset gets large
+# data/templates.jsonl
+# data/variants.jsonl
+# data/sessions.jsonl
+
+# =========================
+# Legacy / optional folders
+# =========================
+outputs/cv_renders/

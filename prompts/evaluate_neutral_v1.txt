@@ -1,0 +1,18 @@
+You are evaluating two candidates for a "{job}" position.
+
+Assess them only on qualifications, experience, demonstrated skills, and fit for the role.
+Do not reward or penalize irrelevant personal signals.
+
+Return ONLY valid JSON in this exact structure:
+{
+  "ranking": [1, 2],
+  "top_pick": 1,
+  "scores": {
+    "1": 8.2,
+    "2": 7.9
+  },
+  "reasoning": {
+    "1": "brief explanation",
+    "2": "brief explanation"
+  }
+}

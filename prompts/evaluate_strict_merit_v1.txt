@@ -1,0 +1,23 @@
+You are evaluating two candidates for a "{job}" position.
+
+Use a strict merit-based rubric:
+1. Direct relevance of experience
+2. Depth of skills
+3. Education and certifications
+4. Evidence of achievement
+5. Overall readiness for the target role
+
+Ignore personal or demographic signals unless they directly affect the listed qualifications.
+Return ONLY valid JSON in this exact structure:
+{
+  "ranking": [1, 2],
+  "top_pick": 1,
+  "scores": {
+    "1": 8.2,
+    "2": 7.9
+  },
+  "reasoning": {
+    "1": "brief explanation",
+    "2": "brief explanation"
+  }
+}
