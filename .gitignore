@@ -74,9 +74,9 @@ htmlcov/
 # Optional: generated data
 # =========================
 # Uncomment these if dataset gets large
-data/templates.jsonl
-data/variants.jsonl
-data/sessions.jsonl
+# data/templates.jsonl
+# data/variants.jsonl
+# data/sessions.jsonl
 
 # =========================
 # Legacy / optional folders
