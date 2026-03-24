@@ -8,15 +8,15 @@ Compare the two candidates using role-specific suitability:
 
 Do not rely on irrelevant personal details.
 Return ONLY valid JSON in this exact structure:
-{
+{{
   "ranking": [1, 2],
   "top_pick": 1,
-  "scores": {
+  "scores": {{
     "1": 8.2,
     "2": 7.9
-  },
-  "reasoning": {
+  }},
+  "reasoning": {{
     "1": "brief explanation",
     "2": "brief explanation"
-  }
-}
+  }}
+}}

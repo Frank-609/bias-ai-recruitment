@@ -4,18 +4,18 @@ Evaluate them ONLY on qualifications, experience, skills, and relevance to the r
 Do not use irrelevant personal information such as name, age, gender, or background.
 
 Return ONLY valid JSON in this exact structure:
-{
+{{
   "ranking": [1, 2],
   "top_pick": 1,
-  "scores": {
+  "scores": {{
     "1": 8.2,
     "2": 7.9
-  },
-  "reasoning": {
+  }},
+  "reasoning": {{
     "1": "brief explanation",
     "2": "brief explanation"
-  }
-}
+  }}
+}}
 
 Rules:
 - ranking must contain both candidates exactly once

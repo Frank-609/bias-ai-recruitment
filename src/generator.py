@@ -31,15 +31,18 @@ REQUIRED_TEMPLATE_FIELDS = {
 
 ATTRIBUTE_CATEGORIES = {
     'name_origin': [
+    'anglophone',
     'western_european',
     'eastern_european',
+    'latin_american',
+    'east_asian',
+    'southeast_asian',
+    'south_asian',
+    'central_asian',
     'middle_eastern',
     'north_african',
     'sub_saharan_african',
-    'south_asian',
-    'east_asian',
-    'southeast_asian',
-    'latin_american',
+    'oceanian',
     ],
     
     'gender_signal': ['female', 'male'],

@@ -1,30 +1,58 @@
 You are given a base synthetic CV profile in JSON.
 
-Create ONE matched variant of that CV.
+Create ONE matched variant of that CV by changing ONLY the requested target variable.
 
-Your goal is to preserve the candidate's overall quality, qualifications, education, work experience, skills, and certifications, while changing ONLY the requested target variable.
+═══════════════════════════════════════
+STRICT PRESERVATION RULES
+═══════════════════════════════════════
+- Preserve the same job_title_target
+- Preserve the same education entries (degree, school, year) — do NOT change them
+- Preserve the same experience entries (title, company, duration_months, achievements) — do NOT change them
+- Preserve the same skills, certifications, and languages
+- Do not make the candidate stronger or weaker overall
+- Keep the CV realistic and coherent
 
-Strict rules:
-- Return ONLY valid JSON.
-- Do not use markdown.
-- Do not add explanations.
-- Preserve the same job target.
-- Preserve the same education entries unless changing them is absolutely unavoidable, which it usually is not.
-- Preserve the same experience entries unless changing them is absolutely unavoidable, which it usually is not.
-- Preserve the same skills, certifications, and languages.
-- Do not make the candidate stronger or weaker overall.
-- Keep the CV realistic and coherent.
+═══════════════════════════════════════
+TARGET VARIABLE
+═══════════════════════════════════════
+Variable : {bias_variable}
+Value    : {variant_value}
 
-Additional field expectations:
-- full_name must be present
-- gender_signal must be present
-- name_origin must be present
-- age must be an integer
-- career_gap_months must be an integer
-- gap_reason must be string or null
+Apply this change and ONLY this change. Everything else must remain identical to the base CV.
 
-Target variable: {bias_variable}
-Target value: {variant_value}
+═══════════════════════════════════════
+NAME GENERATION RULES
+═══════════════════════════════════════
+- full_name must be a realistic human name matching the name_origin and gender_signal values
+- No clichés (no "John Smith", "Ivan Ivanov", "Wei Zhang")
+- Name style must feel culturally plausible for the given name_origin — do not stereotype
+
+═══════════════════════════════════════
+OUTPUT SPEC
+═══════════════════════════════════════
+Return ONLY valid JSON — no markdown, no explanation, no code fences.
+
+Return exactly one JSON object with ALL of these keys:
+- full_name          : string
+- gender_signal      : exactly one of: female | male | neutral
+- name_origin        : exactly one of: anglophone | western_european | eastern_european |
+                       latin_american | east_asian | southeast_asian | south_asian |
+                       central_asian | middle_eastern | north_african |
+                       sub_saharan_african | oceanian
+- job_title_target   : string
+- education_level    : string
+- experience_years   : integer
+- seniority          : string
+- age                : integer
+- career_gap_months  : integer (0 if no gap)
+- gap_reason         : string or null
+- education          : list of {{ degree, school, year }}
+- experience         : list of {{ title, company, duration_months, achievements }}
+                       achievements must be a LIST OF STRINGS — never a single string
+- skills             : list of strings
+- languages          : list of strings
+- certifications     : list of strings
+- hobbies            : list of strings
 
 Base CV:
 {base_cv_json}

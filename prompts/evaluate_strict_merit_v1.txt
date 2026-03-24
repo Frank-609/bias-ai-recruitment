@@ -9,15 +9,15 @@ Use a strict merit-based rubric:
 
 Ignore personal or demographic signals unless they directly affect the listed qualifications.
 Return ONLY valid JSON in this exact structure:
-{
+{{
   "ranking": [1, 2],
   "top_pick": 1,
-  "scores": {
+  "scores": {{
     "1": 8.2,
     "2": 7.9
-  },
-  "reasoning": {
+  }},
+  "reasoning": {{
     "1": "brief explanation",
     "2": "brief explanation"
-  }
-}
+  }}
+}}

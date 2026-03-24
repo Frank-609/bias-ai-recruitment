@@ -170,7 +170,9 @@ def render_cv_pdf(cv: dict, output_path: Path, anonymized: bool = False) -> None
     role = cv.get("job_title_target", "Target Role")
     contact_line = "Internal preview"
     if not anonymized:
-        contact_line = f"{cv.get('name_origin', 'unknown origin')}  |  Age {cv.get('age', 'N/A')}"
+        origin = cv.get("name_origin", "unknown origin").replace("_", " ").title()
+        contact_line = f"{origin}  |  Age {cv.get('age', 'N/A')}"
+
 
     story.append(Paragraph(full_name, s["name"]))
     story.append(Spacer(1, 4))
@@ -201,10 +203,13 @@ def render_cv_pdf(cv: dict, output_path: Path, anonymized: bool = False) -> None
             if not bullets:
                 bullets = [f"Worked as {title} at {company}."]
 
-            for mission in bullets:
+            if isinstance(bullets, str):
+                bullets = [b.strip() for b in re.split(r"[;|\n]+", bullets) if b.strip()]
+
+            for mission in bullets:                         
                 story.append(Paragraph(f"• {mission}", s["bullet"]))
 
-            if i == 0 and gap_months > 0 and gap_reason:
+            if i == 0 and gap_months > 0 and gap_reason:   
                 story.append(Spacer(1, 4))
                 story.append(
                     Paragraph(

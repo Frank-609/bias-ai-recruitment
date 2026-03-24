@@ -6,6 +6,8 @@ bias-ai-recruitment/
 ├─ notes.txt
 ├─ requirements.txt
 ├─ .gitignore
+├─ .env
+├─ .env.example
 ├─ data/
 │  ├─ templates.jsonl
 │  ├─ variants.jsonl
@@ -49,3 +51,62 @@ prompts, and conditions, and ultimately understand how and when biases emerge.
 The project is therefore not just about generating CVs, but about creating a reproducible 
 experimental framework that produces meaningful, interpretable evidence about bias in AI-driven 
 hiring scenarios.
+
+
+For the setup:
+--------------
+Creating venv and install dependencies:
+---------------------------------------
+python -m venv .venv
+.venv\Scripts\activate        # Windows
+# OR
+source .venv/bin/activate     # Linux/macOS
+
+pip install -r requirements.txt
+
+API Key Setup: Create .env in the root folder and type inside it:
+-----------------------------------------------------------------
+OPENAI_API_KEY=apikeyforOPENAI
+MISTRAL_API_KEY=apikeyforMISTRAL
+
+Main Commands:
+--------------
+Running everything: CV generation, Variant creation, Session building, Evaluation, Analysis
+-------------------------------------------------------------------------------------------
+python -m src.run_pipeline \
+  --job "Data Analyst" \
+  --languages English \
+  --template-count 2 \
+  --provider openai \
+  --model gpt-4o-mini \
+  --scenario single_attribute \
+  --prompts neutral_v1 \
+  --replicates 1 \
+  --concurrency 2 \
+  --reset
+
+Only CV generation:
+-------------------
+python -m src.generator templates \
+  --job "Data Analyst" \
+  --language English \
+  --count 10 \
+  --provider openai \
+  --model gpt-4o-mini \
+  --reset
+
+then:
+
+python -m src.generator variants \
+  --provider openai \
+  --model gpt-4o-mini \
+  --scenario single_attribute \
+  --reset
+
+
+For previewing a CV:
+--------------------
+a specific one: find its id in jsonl files (example: cv_2f2bbfa37ce0)
+python -m src.preview --cv-id cv_2f2bbfa37ce0
+or simply just pick a random one
+python -m src.preview --random

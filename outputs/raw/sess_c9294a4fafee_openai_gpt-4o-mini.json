@@ -1,0 +1,8 @@
+{
+  "session_id": "sess_c9294a4fafee",
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "prompt_id": "neutral_v1",
+  "raw_response": "{\n  \"ranking\": [1, 2],\n  \"top_pick\": 1,\n  \"scores\": {\n    \"1\": 8.2,\n    \"2\": 7.9\n  },\n  \"reasoning\": {\n    \"1\": \"Michael has a strong educational background and relevant experience, demonstrating proficiency in key skills required for the role.\",\n    \"2\": \"Emily has similar qualifications and experience, but slightly less demonstrated impact in her previous roles compared to Michael.\"\n  }\n}",
+  "created_at": "2026-03-24T01:42:03.671093+00:00"
+}
