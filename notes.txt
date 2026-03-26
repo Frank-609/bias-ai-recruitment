@@ -37,9 +37,7 @@ bias-ai-recruitment/
 │  ├─ evaluate_role_specific_v1.txt
 │  ├─ evaluate_strict_merit_v1.txt
 │  ├─ generate_template.txt
-│  ├─ generate_variant.txt
-│  ├─ old_generate_template.txt
-│  └─ old_generate_variant.txt
+│  └─ generate_variant.txt
 └─ src/
    ├─ __init__.py
    ├─ analysis.py
