@@ -12,7 +12,50 @@ DATA_DIR = ROOT / 'data'
 OUTPUTS_DIR = ROOT / 'outputs'
 PROMPTS_DIR = ROOT / 'prompts'
 
+import shutil
 
+def clear_directory(path: Path) -> None:
+    if not path.exists():
+        return
+    for child in path.iterdir():
+        if child.is_file() or child.is_symlink():
+            child.unlink()
+        elif child.is_dir():
+            shutil.rmtree(child)
+
+def reset_pipeline_state(
+    reset_templates: bool = True,
+    reset_variants: bool = True,
+    reset_sessions: bool = True,
+    reset_results: bool = True,
+    reset_raw: bool = True,
+    reset_parsed: bool = True,
+    reset_figures: bool = True,
+    reset_preview_pdfs: bool = False,
+    reset_metrics: bool = True,
+) -> None:
+    if reset_templates:
+        reset_file(DATA_DIR / 'templates.jsonl')
+    if reset_variants:
+        reset_file(DATA_DIR / 'variants.jsonl')
+    if reset_sessions:
+        reset_file(DATA_DIR / 'sessions.jsonl')
+    if reset_results:
+        reset_file(OUTPUTS_DIR / 'results.jsonl')
+    if reset_raw:
+        clear_directory(OUTPUTS_DIR / 'raw')
+    if reset_parsed:
+        clear_directory(OUTPUTS_DIR / 'parsed')
+    if reset_figures:
+        clear_directory(OUTPUTS_DIR / 'figures')
+    if reset_preview_pdfs:
+        clear_directory(OUTPUTS_DIR / 'preview_pdfs')
+    if reset_metrics:
+        metrics_path = OUTPUTS_DIR / 'metrics.json'
+        if metrics_path.exists():
+            metrics_path.unlink()
+            
+            
 def bootstrap() -> None:
     load_dotenv(ROOT / '.env', override=False)
     ensure_project_dirs()

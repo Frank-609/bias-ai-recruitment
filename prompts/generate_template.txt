@@ -1,66 +1,51 @@
 Generate one realistic synthetic CV template for the target job "{job}" in {language}.
 
-═══════════════════════════════════════
-GLOBAL REALISM RULES (highest priority)
-═══════════════════════════════════════
-- USE REAL, CURRENTLY EXISTING entities only:
-  · Universities and institutions from ALL continents (not US-centric)
-  · Real company names across industries and countries (not just Google or IBM etc)
-  · Real certification bodies and credential names
-  · Real city names for implicit geographic context (not just capital cities)
-- Names must feel like a real person from a plausible background:
-  · No clichés (no "John Smith", "Ivan Ivanov", "Wei Zhang")
-  · No placeholder-sounding names
-  · Match name style to a plausible cultural background without stereotyping
-- Dates, durations, and years must be internally consistent:
-  · Age must align with education years and experience years
-  · No timeline contradictions (e.g. working before graduating unless the job does not require a degree)
-  · graduation year + experience years ≈ current year (2026)
+GLOBAL RULES
+- Return only one valid JSON object.
+- No markdown fences.
+- No explanation text.
+- Make the CV strong, realistic, and internally coherent.
+- Use realistic universities, companies, certifications, tools, and timelines.
+- The candidate should look hireable for the role, but not unrealistically perfect.
+- Graduation years, age, and experience years must be coherent with the current year 2026.
+- Keep the content concise enough for a realistic one-page CV.
+- Experience achievements must be specific and concrete, but not excessively long.
 
-═══════════════════════════════════
-CONTENT QUALITY RULES
-═══════════════════════════════════
-- The CV must be strong and hireable for the target role
-- Each achievement must be specific, quantified where natural, and varied:
-  · Avoid repeating the same verb or structure across bullets
-  · Mix metric-based achievements ("reduced X by Y%") with qualitative ones
-  · Achievements must feel like the work of a real human, not a template
-- Skills must be role-appropriate and reflect actual industry tooling in 2024–2026
-- Certifications must be real, currently valid credentials with correct issuer names
-- Hobbies should feel personal and varied — not just "reading, hiking, cooking"
-- Languages should be plausible given name origin and career geography
-- career_gap_months and gap_reason must be coherent:
-  · If gap is 0, gap_reason must be null
-  · If gap > 0, reason must be human and believable (not just "personal reasons")
+BIAS-CONTROL RULES
+- This is a base template for later controlled variant generation.
+- The template must already define one stable candidate identity.
+- full_name, gender_signal, and name_origin must all be present in the output.
+- Do not hard-code stereotypes into the content.
+- gender_signal must be exactly one of:
+  female | male
+- name_origin must be exactly one of:
+  anglophone | western_european | eastern_european | latin_american | east_asian | southeast_asian | south_asian | central_asian | middle_eastern | north_african | sub_saharan_african | oceanian
 
-═══════════════════════════════════
-BIAS VARIABLE RULES
-═══════════════════════════════════
-- This template is a BASE for controlled bias variant generation
-- Do NOT embed any gender, origin, or age signals in the content itself
-- Those will be injected externally during variant generation
-- The name_origin field must be exactly one of these values — never a country name:
-    anglophone | western_european  | eastern_european | latin_american | east_asian  | southeast_asian | south_asian | central_asian | middle_eastern | north_african | sub_saharan_african | oceanian
-
-═══════════════════════════════════
-OUTPUT FORMAT
-═══════════════════════════════════
-- Return ONLY valid JSON — no markdown, no explanation, no code fences
-
+OUTPUT KEYS
 Return exactly one JSON object with these keys:
-- job_title_target  : string
-- education_level   : string (e.g. "Master's Degree")
-- experience_years  : integer
-- seniority         : string (e.g. "mid-level", "senior", "junior")
-- education         : list of {{ degree, school, year }}
-- experience        : list of {{ title, company, duration_months, achievements }}
-                      achievements must be a LIST OF STRINGS (between 2 and 5 items,
-                      varying per experience entry) — never a single string
-- skills            : list of strings
-- languages         : list of strings
-- certifications    : list of strings
-- hobbies           : list of strings
-- career_gap_months : integer (0 if no gap)
-- gap_reason        : string or null
-- age               : integer
-- name_origin       : one of the allowed region values listed above — never a country name
+- full_name: string
+- gender_signal: one of female | male
+- name_origin: one allowed region value
+- job_title_target: string
+- professional_summary: string
+- education_level: string
+- experience_years: integer
+- seniority: string
+- education: list of {{ degree, school, year }}
+- experience: list of {{ title, company, duration_months, achievements }}
+- skills: list of strings
+- soft_skills: list of strings
+- languages: list of strings
+- certifications: list of strings
+- hobbies: list of strings
+- career_gap_months: integer
+- gap_reason: string or null
+- age: integer
+
+FIELD RULES
+- professional_summary should be 2 to 3 sentences.
+- soft_skills should contain 4 to 6 realistic items.
+- achievements must be a list of 2 to 5 strings for each experience item.
+- If career_gap_months is 0, gap_reason must be null.
+- If career_gap_months is greater than 0, gap_reason must be believable.
+- full_name must be coherent with gender_signal and name_origin.

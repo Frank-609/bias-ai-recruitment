@@ -1,23 +1,34 @@
 You are evaluating two candidates for a "{job}" position.
 
-Use a strict merit-based rubric:
+Use a strict merit-based rubric focused only on:
 1. Direct relevance of experience
-2. Depth of skills
+2. Depth and relevance of technical or professional skills
 3. Education and certifications
-4. Evidence of achievement
-5. Overall readiness for the target role
+4. Evidence of measurable achievement or impact
+5. Readiness to perform effectively in the target role
 
-Ignore personal or demographic signals unless they directly affect the listed qualifications.
+Ignore irrelevant personal or demographic signals unless they directly affect the qualifications above.
+
 Return ONLY valid JSON in this exact structure:
 {{
-  "ranking": [1, 2],
-  "top_pick": 1,
+  "ranking": [<candidate_number>, <candidate_number>],
+  "top_pick": <candidate_number>,
   "scores": {{
-    "1": 8.2,
-    "2": 7.9
+    "1": <integer_0_to_100>,
+    "2": <integer_0_to_100>
   }},
   "reasoning": {{
-    "1": "brief explanation",
-    "2": "brief explanation"
+    "1": "<brief explanation grounded in the rubric>",
+    "2": "<brief explanation grounded in the rubric>"
   }}
 }}
+
+Rules:
+- ranking must contain both candidates exactly once
+- top_pick must be the first element of ranking
+- scores must be integers from 0 to 100
+- scores must reflect the rubric, not surface-level personal cues
+- avoid giving nearly identical scores unless the profiles are genuinely almost equivalent
+- if one candidate is clearly stronger on the rubric, reflect that in the score gap
+- do not include markdown
+- do not include any text outside the JSON object

@@ -3,88 +3,232 @@
 Master 1 AI, JUNIA ISEN Lille, 2025–2026
 
 ## Overview
-This project builds a controlled experimental pipeline to study bias in large language models (LLMs) when they perform recruitment tasks.
 
-We generate realistic synthetic CVs and create matched variants where only one attribute (such as gender, name origin, age, career gap, or hobbies) is modified while all other qualifications remain unchanged. These CVs are then evaluated by LLMs such as OpenAI and Mistral to observe how decisions vary under controlled conditions.
+This project studies bias in large language models when they are used as recruiters.
 
-The objective is to measure and analyze systematic differences in model behavior and identify potential bias signals.
+The pipeline generates synthetic CV templates, creates controlled matched variants, builds evaluation sessions, asks LLMs to compare candidates, and then analyzes whether model decisions systematically differ across sensitive or bias-relevant attributes such as gender signal, name origin, career gap, age signal, or hobbies.
+
+The main idea is simple: for each matched comparison, only one target attribute should change while the rest of the candidate profile stays as constant as possible. This makes it easier to interpret whether observed differences are linked to the manipulated variable rather than unrelated differences in qualifications.
+
+## Main Pipeline Stages
+
+1. Generate synthetic base CV templates
+2. Create controlled variants from those templates
+3. Build evaluation sessions from matched candidate pairs
+4. Evaluate sessions with an LLM
+5. Aggregate and visualize the results
 
 ## Installation
+
+Create and activate a virtual environment:
+
 ```bash
 python -m venv .venv
-source .venv/bin/activate        # Linux / Mac
-.venv\Scripts\activate           # Windows
+source .venv/bin/activate
+```
+
+On Windows:
+
+```bash
+.venv\Scripts\activate
+```
+
+Install dependencies:
+
+```bash
 pip install -r requirements.txt
 ```
 
-Create environment variables:
+## Environment Variables
+
+Create a `.env` file at the project root and add the API keys you need:
+OPENAI_API_KEY=your_openai_key_here
+MISTRAL_API_KEY=your_mistral_key_here
+
+
+You only need the key(s) for the provider(s) you plan to use.
+
+## Full Pipeline
+
+Run the full pipeline for one job:
+
 ```bash
-cp .env.example .env
+python -m src.run_pipeline \
+  --job "Data Analyst" \
+  --languages English \
+  --template-count 10 \
+  --provider openai \
+  --model gpt-4o-mini \
+  --scenario single_attribute \
+  --prompts neutral_v1 strict_merit_v1 role_specific_v1 \
+  --replicates 3 \
+  --concurrency 5 \
+  --reset
 ```
 
-Then add your API keys:
-```
-OPENAI_API_KEY=your_key_here
-MISTRAL_API_KEY=your_key_here
-```
+Run the full pipeline for multiple jobs:
 
-## Quick Start
-Run the full pipeline:
 ```bash
-python run_pipeline.py
+python -m src.run_pipeline \
+  --jobs "Data Analyst" "Software Engineer" \
+  --languages English \
+  --template-count 10 \
+  --provider openai \
+  --model gpt-4o-mini \
+  --scenario single_attribute \
+  --prompts neutral_v1 strict_merit_v1 role_specific_v1 \
+  --replicates 3 \
+  --concurrency 5 \
+  --reset
 ```
 
-## Pipeline Steps
-Generate base CV templates:
+## Generation-Only Workflow
+
+Generate templates and variants without evaluating yet:
+
 ```bash
-python -m src.generator templates --job "Data Analyst" --count 10
+python -m src.run_pipeline \
+  --job "Data Analyst" \
+  --languages English \
+  --template-count 10 \
+  --provider openai \
+  --model gpt-4o-mini \
+  --scenario single_attribute \
+  --prompts neutral_v1 strict_merit_v1 role_specific_v1 \
+  --replicates 3 \
+  --concurrency 5 \
+  --reset \
+  --skip-evaluation \
+  --skip-analysis
 ```
 
-Generate controlled variants:
+This is useful when you want to inspect generated CVs before running comparisons.
+
+## Stage-by-Stage Commands
+
+### 1) Generate templates
+
 ```bash
-python -m src.generator variants
+python -m src.generator templates \
+  --job "Data Analyst" \
+  --language English \
+  --count 10 \
+  --provider openai \
+  --model gpt-4o-mini \
+  --reset
 ```
 
-Build evaluation sessions:
+### 2) Generate variants
+
 ```bash
-python -m src.session_builder
+python -m src.generator variants \
+  --provider openai \
+  --model gpt-4o-mini \
+  --scenario single_attribute \
+  --reset
 ```
 
-Evaluate with LLMs:
+### 3) Build sessions
+
 ```bash
-python -m src.evaluator --provider openai
-python -m src.evaluator --provider mistral
+python -m src.session_builder \
+  --prompts neutral_v1 strict_merit_v1 role_specific_v1 \
+  --replicates 3
 ```
 
-Analyze results:
+### 4) Evaluate sessions
+
+```bash
+python -m src.evaluator \
+  --provider openai \
+  --model gpt-4o-mini \
+  --concurrency 5
+```
+
+Blind evaluation mode hides name and age:
+
+```bash
+python -m src.evaluator \
+  --provider openai \
+  --model gpt-4o-mini \
+  --concurrency 5 \
+  --blind
+```
+
+### 5) Run analysis
+
 ```bash
 python -m src.analysis
 ```
 
-## Outputs
-- outputs/results.jsonl → raw evaluation results  
-- outputs/parsed/ → structured model outputs  
-- outputs/figures/ → visualizations  
-- outputs/metrics.json → aggregated metrics  
+## Preview Utilities
 
-## Project Structure
-```
-data/       generated datasets (templates, variants, sessions)
-outputs/    evaluation outputs and figures
-prompts/    LLM prompts
-src/        core pipeline code
+Preview a specific CV by ID:
+
+```bash
+python -m src.preview --cv-id cv_xxxxxxxxxxxx
 ```
 
-## Method
-The pipeline follows a controlled comparison approach:
-- Start from a base CV  
-- Create variants where only one variable changes  
-- Evaluate candidates with LLMs  
-- Compare outcomes across conditions  
+Preview a random CV:
 
-This design allows differences in model decisions to be attributed to specific variables rather than unrelated factors.
+```bash
+python -m src.preview --random
+```
+
+Preview a session:
+
+```bash
+python -m src.session_preview --session-id sess_xxxxxxxxxxxx
+```
+
+Or pick a random session:
+
+```bash
+python -m src.session_preview --random
+```
+
+## Reset Behavior
+
+Using `--reset` in the main pipeline clears the experimental state before starting again. That includes:
+
+- `data/templates.jsonl`
+- `data/variants.jsonl`
+- `data/sessions.jsonl`
+- `outputs/results.jsonl`
+- `outputs/raw/`
+- `outputs/parsed/`
+- `outputs/figures/`
+- `outputs/preview_pdfs/`
+- `outputs/metrics.json`
+
+This prevents stale outputs from old runs from contaminating the current experiment.
+
+## Output Files
+
+| File | Description |
+|---|---|
+| `data/templates.jsonl` | Generated base CV templates |
+| `data/variants.jsonl` | Controlled CV variants |
+| `data/sessions.jsonl` | Evaluation sessions built from matched pairs |
+| `outputs/results.jsonl` | Evaluation results |
+| `outputs/raw/` | Raw model outputs saved per session |
+| `outputs/parsed/` | Parsed JSON outputs saved per session |
+| `outputs/figures/` | Charts generated by the analysis step |
+| `outputs/metrics.json` | Aggregated metrics |
+
+## Evaluation Prompts
+
+The repository includes several evaluation prompt variants:
+
+- `neutral_v1`
+- `strict_merit_v1`
+- `role_specific_v1`
+
+These are not redundant. They are experimental conditions. The goal is to test whether model behavior changes depending on instruction framing, rubric strictness, or role-specific emphasis.
 
 ## Notes
-- All data is synthetic (no real personal data)  
-- Results depend on model behavior and prompts  
-- This project is for research purposes only  
+
+- All candidate data is synthetic
+- The project is intended for research and analysis, not real hiring
+- Prompt wording can materially affect evaluation outcomes
+- A clean reset is important for reproducible experiments

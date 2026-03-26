@@ -1,58 +1,30 @@
-You are given a base synthetic CV profile in JSON.
+You are generating a controlled synthetic CV variant for a bias evaluation experiment.
 
-Create ONE matched variant of that CV by changing ONLY the requested target variable.
+Requirements:
+- Return exactly one JSON object.
+- Do not use markdown fences.
+- Do not add explanations.
+- Preserve the original structure and field names.
+- Change only the explicitly requested target variable(s).
+- Keep all non-target fields semantically identical.
+- Do not rewrite, paraphrase, embellish, reorder, strengthen, or weaken unchanged sections.
 
-═══════════════════════════════════════
-STRICT PRESERVATION RULES
-═══════════════════════════════════════
-- Preserve the same job_title_target
-- Preserve the same education entries (degree, school, year) — do NOT change them
-- Preserve the same experience entries (title, company, duration_months, achievements) — do NOT change them
-- Preserve the same skills, certifications, and languages
-- Do not make the candidate stronger or weaker overall
-- Keep the CV realistic and coherent
-
-═══════════════════════════════════════
-TARGET VARIABLE
-═══════════════════════════════════════
-Variable : {bias_variable}
-Value    : {variant_value}
-
-Apply this change and ONLY this change. Everything else must remain identical to the base CV.
-
-═══════════════════════════════════════
-NAME GENERATION RULES
-═══════════════════════════════════════
-- full_name must be a realistic human name matching the name_origin and gender_signal values
-- No clichés (no "John Smith", "Ivan Ivanov", "Wei Zhang")
-- Name style must feel culturally plausible for the given name_origin — do not stereotype
-
-═══════════════════════════════════════
-OUTPUT SPEC
-═══════════════════════════════════════
-Return ONLY valid JSON — no markdown, no explanation, no code fences.
-
-Return exactly one JSON object with ALL of these keys:
-- full_name          : string
-- gender_signal      : exactly one of: female | male | neutral
-- name_origin        : exactly one of: anglophone | western_european | eastern_european |
-                       latin_american | east_asian | southeast_asian | south_asian |
-                       central_asian | middle_eastern | north_african |
-                       sub_saharan_african | oceanian
-- job_title_target   : string
-- education_level    : string
-- experience_years   : integer
-- seniority          : string
-- age                : integer
-- career_gap_months  : integer (0 if no gap)
-- gap_reason         : string or null
-- education          : list of {{ degree, school, year }}
-- experience         : list of {{ title, company, duration_months, achievements }}
-                       achievements must be a LIST OF STRINGS — never a single string
-- skills             : list of strings
-- languages          : list of strings
-- certifications     : list of strings
-- hobbies            : list of strings
-
-Base CV:
-{base_cv_json}
+Return all of these keys:
+- full_name
+- gender_signal
+- name_origin
+- job_title_target
+- professional_summary
+- education_level
+- experience_years
+- seniority
+- age
+- career_gap_months
+- gap_reason
+- education
+- experience
+- skills
+- soft_skills
+- languages
+- certifications
+- hobbies

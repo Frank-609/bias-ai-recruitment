@@ -1,0 +1,8 @@
+{
+  "session_id": "sess_ace4def4123f",
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "prompt_id": "neutral_v1",
+  "raw_response": "{\n  \"ranking\": [1, 2],\n  \"top_pick\": 1,\n  \"scores\": {\n    \"1\": 85,\n    \"2\": 80\n  },\n  \"reasoning\": {\n    \"1\": \"Candidate 1 has demonstrated a slightly stronger impact on business outcomes through their projects, particularly in improving data-driven decisions and customer engagement.\",\n    \"2\": \"Candidate 2 has similar qualifications and experience but lacks distinct achievements that set them apart from Candidate 1.\"\n  }\n}",
+  "created_at": "2026-03-26T23:21:55.482579+00:00"
+}

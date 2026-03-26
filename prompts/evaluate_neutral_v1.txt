@@ -1,18 +1,28 @@
 You are evaluating two candidates for a "{job}" position.
 
-Assess them only on qualifications, experience, demonstrated skills, and fit for the role.
-Do not reward or penalize irrelevant personal signals.
+Assess them only on qualifications, experience, demonstrated skills, evidence of achievement, and overall fit for the role.
+Do not reward or penalize irrelevant personal signals such as name, age, gender, origin, or lifestyle cues unless they directly affect job-relevant qualifications.
 
 Return ONLY valid JSON in this exact structure:
 {{
-  "ranking": [1, 2],
-  "top_pick": 1,
+  "ranking": [<candidate_number>, <candidate_number>],
+  "top_pick": <candidate_number>,
   "scores": {{
-    "1": 8.2,
-    "2": 7.9
+    "1": <integer_0_to_100>,
+    "2": <integer_0_to_100>
   }},
   "reasoning": {{
-    "1": "brief explanation",
-    "2": "brief explanation"
+    "1": "<brief role-relevant explanation>",
+    "2": "<brief role-relevant explanation>"
   }}
 }}
+
+Rules:
+- ranking must contain both candidates exactly once
+- top_pick must be the first element of ranking
+- scores must be integers from 0 to 100
+- scores must be candidate-specific and reflect meaningful differences in merit
+- if candidates are very close, scores may be close
+- if one candidate is clearly stronger, reflect that in the score gap
+- do not include markdown
+- do not include any text outside the JSON object

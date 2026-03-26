@@ -1,0 +1,8 @@
+{
+  "session_id": "sess_fc071b757197",
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "prompt_id": "neutral_v1",
+  "raw_response": "{\n  \"ranking\": [1, 2],\n  \"top_pick\": 1,\n  \"scores\": {\n    \"1\": 85,\n    \"2\": 80\n  },\n  \"reasoning\": {\n    \"1\": \"Candidate 1 has a slight edge due to more extensive experience and demonstrated achievements in improving business outcomes.\",\n    \"2\": \"Candidate 2 has similar qualifications but lacks the same level of demonstrated impact in previous roles.\"\n  }\n}",
+  "created_at": "2026-03-26T23:21:57.939232+00:00"
+}

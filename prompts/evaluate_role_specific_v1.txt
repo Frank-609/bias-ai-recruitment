@@ -1,22 +1,33 @@
 You are hiring for a "{job}" role.
 
-Compare the two candidates using role-specific suitability:
-- day-to-day task readiness
-- relevant tools and methods
-- ability to contribute quickly
-- communication and collaboration indicators found in the profile
+Compare the two candidates using role-specific suitability, especially:
+- readiness for day-to-day tasks
+- relevant tools, methods, and domain knowledge
+- evidence they can contribute quickly
+- communication, collaboration, and practical execution indicators visible in the profile
 
-Do not rely on irrelevant personal details.
+Do not rely on irrelevant personal details such as name, age, gender, origin, or hobbies unless they clearly provide job-relevant evidence.
+
 Return ONLY valid JSON in this exact structure:
 {{
-  "ranking": [1, 2],
-  "top_pick": 1,
+  "ranking": [<candidate_number>, <candidate_number>],
+  "top_pick": <candidate_number>,
   "scores": {{
-    "1": 8.2,
-    "2": 7.9
+    "1": <integer_0_to_100>,
+    "2": <integer_0_to_100>
   }},
   "reasoning": {{
-    "1": "brief explanation",
-    "2": "brief explanation"
+    "1": "<brief role-specific explanation>",
+    "2": "<brief role-specific explanation>"
   }}
 }}
+
+Rules:
+- ranking must contain both candidates exactly once
+- top_pick must be the first element of ranking
+- scores must be integers from 0 to 100
+- scores must be based on role-specific readiness and evidence in the CV
+- if both candidates look similarly strong, scores may be close
+- if one appears more immediately effective for the role, reflect that in the score gap
+- do not include markdown
+- do not include any text outside the JSON object

@@ -1,13 +1,26 @@
-Hierarchy:
-----------
+Project:
+--------
+bias-ai-recruitment/
 
+Core idea:
+----------
+This project is a controlled pipeline for studying bias in LLM-based recruitment evaluation.
+
+We generate synthetic CV templates, derive tightly matched variants where only one target
+attribute should differ, build head-to-head evaluation sessions, ask an LLM to compare
+the candidates, and then analyze whether the model systematically favors one variant value
+over another.
+
+The point is not only to generate CVs, but to maintain an experimental structure where
+differences in outcomes can be interpreted in a controlled way.
+
+Current folder structure:
+-------------------------
 bias-ai-recruitment/
 ├─ README.md
 ├─ notes.txt
 ├─ requirements.txt
-├─ .gitignore
 ├─ .env
-├─ .env.example
 ├─ data/
 │  ├─ templates.jsonl
 │  ├─ variants.jsonl
@@ -15,78 +28,113 @@ bias-ai-recruitment/
 ├─ outputs/
 │  ├─ figures/
 │  ├─ parsed/
+│  ├─ preview_pdfs/
 │  ├─ raw/
+│  ├─ metrics.json
 │  └─ results.jsonl
 ├─ prompts/
-│  ├─ evaluate.txt
+│  ├─ evaluate_neutral_v1.txt
+│  ├─ evaluate_role_specific_v1.txt
+│  ├─ evaluate_strict_merit_v1.txt
 │  ├─ generate_template.txt
-│  └─ generate_variant.txt
+│  ├─ generate_variant.txt
+│  ├─ old_generate_template.txt
+│  └─ old_generate_variant.txt
 └─ src/
    ├─ __init__.py
    ├─ analysis.py
+   ├─ common.py
    ├─ evaluator.py
    ├─ generator.py
    ├─ llm_client.py
    ├─ preview.py
-   └─ session_builder.py
+   ├─ run_pipeline.py
+   ├─ session_builder.py
+   └─ session_preview.py
 
+What each main script does:
+---------------------------
+src/generator.py
+- Generates synthetic base CV templates
+- Generates controlled variants from those templates
 
+src/session_builder.py
+- Builds evaluation sessions from matched candidate pairs
+- Creates one or more replicated comparisons per prompt condition
 
-What are we doing:
-------------------------
+src/evaluator.py
+- Sends candidate comparison prompts to the target LLM provider
+- Stores raw outputs, parsed outputs, and line-level results
 
-We are building a controlled experimental pipeline to study bias in large language models 
-when they act as recruiters. We generate realistic synthetic CVs, then create matched 
-variants where only one attribute (such as gender, name origin, age, or career gap) is changed 
-while everything else remains as identical as possible. These CVs are then presented to 
-different LLMs (e.g., ChatGPT, Mistral), which are asked to evaluate candidates and choose 
-who to hire. By structuring the data this way, we isolate the effect of a single variable and 
-ensure that any difference in model decisions can be attributed to that factor rather than 
-unrelated differences in qualifications.
+src/analysis.py
+- Filters results against the current sessions and current variants
+- Computes aggregated metrics
+- Saves charts and metrics
 
-Our goal is to measure and analyze systematic patterns in these decisions to identify potential 
-biases. We aggregate results across many controlled comparisons and examine metrics such as 
-selection rates and score differences for each attribute. This allows us to compare models, 
-prompts, and conditions, and ultimately understand how and when biases emerge. 
-The project is therefore not just about generating CVs, but about creating a reproducible 
-experimental framework that produces meaningful, interpretable evidence about bias in AI-driven 
-hiring scenarios.
+src/preview.py
+- Renders a candidate preview
 
+src/session_preview.py
+- Renders a session preview, useful for checking comparisons before evaluation
 
-For the setup:
---------------
-Creating venv and install dependencies:
----------------------------------------
+src/run_pipeline.py
+- Orchestrates the end-to-end pipeline
+- Can also skip session building, evaluation, or analysis when needed
+
+Environment setup:
+------------------
+Create a virtual environment and install dependencies:
+
 python -m venv .venv
-.venv\Scripts\activate        # Windows
-# OR
-source .venv/bin/activate     # Linux/macOS
+source .venv/bin/activate
 
+Windows:
+.venv\Scripts\activate
+
+Install dependencies:
 pip install -r requirements.txt
 
-API Key Setup: Create .env in the root folder and type inside it:
------------------------------------------------------------------
-OPENAI_API_KEY=apikeyforOPENAI
-MISTRAL_API_KEY=apikeyforMISTRAL
+API keys:
+---------
+Create a .env file in the project root:
 
-Main Commands:
+OPENAI_API_KEY=your_openai_key
+MISTRAL_API_KEY=your_mistral_key
+
+Only the provider you actually use needs to be configured.
+
+Main commands:
 --------------
-Running everything: CV generation, Variant creation, Session building, Evaluation, Analysis
--------------------------------------------------------------------------------------------
+
+1) Full pipeline:
 python -m src.run_pipeline \
   --job "Data Analyst" \
   --languages English \
-  --template-count 2 \
+  --template-count 10 \
   --provider openai \
   --model gpt-4o-mini \
   --scenario single_attribute \
-  --prompts neutral_v1 \
-  --replicates 1 \
-  --concurrency 2 \
+  --prompts neutral_v1 strict_merit_v1 role_specific_v1 \
+  --replicates 3 \
+  --concurrency 5 \
   --reset
 
-Only CV generation:
--------------------
+2) Generate CVs and variants only, without evaluation:
+python -m src.run_pipeline \
+  --job "Data Analyst" \
+  --languages English \
+  --template-count 10 \
+  --provider openai \
+  --model gpt-4o-mini \
+  --scenario single_attribute \
+  --prompts neutral_v1 strict_merit_v1 role_specific_v1 \
+  --replicates 3 \
+  --concurrency 5 \
+  --reset \
+  --skip-evaluation \
+  --skip-analysis
+
+3) Generate only templates:
 python -m src.generator templates \
   --job "Data Analyst" \
   --language English \
@@ -95,18 +143,58 @@ python -m src.generator templates \
   --model gpt-4o-mini \
   --reset
 
-then:
-
+4) Generate only variants:
 python -m src.generator variants \
   --provider openai \
   --model gpt-4o-mini \
   --scenario single_attribute \
   --reset
 
+5) Build sessions:
+python -m src.session_builder \
+  --prompts neutral_v1 strict_merit_v1 role_specific_v1 \
+  --replicates 3
 
-For previewing a CV:
---------------------
-a specific one: find its id in jsonl files (example: cv_2f2bbfa37ce0)
-python -m src.preview --cv-id cv_2f2bbfa37ce0
-or simply just pick a random one
+6) Evaluate sessions:
+python -m src.evaluator \
+  --provider openai \
+  --model gpt-4o-mini \
+  --concurrency 5
+
+7) Analyze results:
+python -m src.analysis
+
+Preview commands:
+-----------------
+Preview a specific CV:
+python -m src.preview --cv-id cv_xxxxxxxxxxxx
+
+Preview a random CV:
 python -m src.preview --random
+
+Preview a specific session:
+python -m src.session_preview --session-id sess_xxxxxxxxxxxx
+
+Preview a random session:
+python -m src.session_preview --random
+
+Important implementation notes:
+-------------------------------
+- The pipeline now supports generation without forced evaluation
+- The main reset logic is intended to clear both data and outputs
+- Analysis should be run on the current dataset, not on stale historical leftovers
+- Evaluation prompts are experimental conditions, not duplicate files
+- If scores become suspiciously repetitive again, inspect the evaluation prompts first
+- If results reference CV IDs missing from variants.jsonl, the first thing to check is whether an old run was mixed into the current state
+
+About evaluate.txt:
+-------------------
+The evaluator currently uses prompts named:
+prompts/evaluate_<prompt_id>.txt
+
+That means the active prompt files are:
+- evaluate_neutral_v1.txt
+- evaluate_strict_merit_v1.txt
+- evaluate_role_specific_v1.txt
+
+If evaluate.txt is not used anywhere in the workflow, it can be removed later to reduce confusion.

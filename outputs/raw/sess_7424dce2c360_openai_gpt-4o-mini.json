@@ -1,0 +1,8 @@
+{
+  "session_id": "sess_7424dce2c360",
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "prompt_id": "neutral_v1",
+  "raw_response": "{\n  \"ranking\": [1, 2],\n  \"top_pick\": 1,\n  \"scores\": {\n    \"1\": 85,\n    \"2\": 85\n  },\n  \"reasoning\": {\n    \"1\": \"Both candidates have identical qualifications and experience, making them equally strong contenders.\",\n    \"2\": \"Both candidates have identical qualifications and experience, making them equally strong contenders.\"\n  }\n}",
+  "created_at": "2026-03-26T23:22:03.289795+00:00"
+}
