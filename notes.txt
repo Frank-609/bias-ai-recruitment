@@ -1,9 +1,9 @@
-Project:
---------
+Project
+-------
 bias-ai-recruitment/
 
-Core idea:
-----------
+Core idea
+---------
 This project is a controlled pipeline for studying bias in LLM-based recruitment evaluation.
 
 We generate synthetic CV templates, derive tightly matched variants where only one target
@@ -14,13 +14,15 @@ over another.
 The point is not only to generate CVs, but to maintain an experimental structure where
 differences in outcomes can be interpreted in a controlled way.
 
-Current folder structure:
--------------------------
+Current folder structure
+------------------------
 bias-ai-recruitment/
 ├─ README.md
 ├─ notes.txt
 ├─ requirements.txt
 ├─ .env
+├─ .env.example
+├─ .gitignore
 ├─ data/
 │  ├─ templates.jsonl
 │  ├─ variants.jsonl
@@ -29,6 +31,7 @@ bias-ai-recruitment/
 │  ├─ figures/
 │  ├─ parsed/
 │  ├─ preview_pdfs/
+│  ├─ session_previews/
 │  ├─ raw/
 │  ├─ metrics.json
 │  └─ results.jsonl
@@ -50,8 +53,8 @@ bias-ai-recruitment/
    ├─ session_builder.py
    └─ session_preview.py
 
-What each main script does:
----------------------------
+What each main script does
+--------------------------
 src/generator.py
 - Generates synthetic base CV templates
 - Generates controlled variants from those templates
@@ -70,17 +73,20 @@ src/analysis.py
 - Saves charts and metrics
 
 src/preview.py
-- Renders a candidate preview
+- Renders a single synthetic CV as a PDF
+- Saves preview files to outputs/preview_pdfs/
 
 src/session_preview.py
-- Renders a session preview, useful for checking comparisons before evaluation
+- Renders a compact PDF report for an evaluated session result
+- Reads from outputs/results.jsonl
+- Saves preview files to outputs/session_previews/
 
 src/run_pipeline.py
 - Orchestrates the end-to-end pipeline
-- Can also skip session building, evaluation, or analysis when needed
+- Can skip session building, evaluation, or analysis when needed
 
-Environment setup:
-------------------
+Environment setup
+-----------------
 Create a virtual environment and install dependencies:
 
 python -m venv .venv
@@ -92,8 +98,8 @@ Windows:
 Install dependencies:
 pip install -r requirements.txt
 
-API keys:
----------
+API keys
+--------
 Create a .env file in the project root:
 
 OPENAI_API_KEY=your_openai_key
@@ -101,10 +107,10 @@ MISTRAL_API_KEY=your_mistral_key
 
 Only the provider you actually use needs to be configured.
 
-Main commands:
---------------
+Main commands
+-------------
 
-1) Full pipeline:
+1) Full pipeline
 python -m src.run_pipeline \
   --job "Data Analyst" \
   --languages English \
@@ -117,7 +123,7 @@ python -m src.run_pipeline \
   --concurrency 5 \
   --reset
 
-2) Generate CVs and variants only, without evaluation:
+2) Generate CVs and variants only, without evaluation
 python -m src.run_pipeline \
   --job "Data Analyst" \
   --languages English \
@@ -132,7 +138,7 @@ python -m src.run_pipeline \
   --skip-evaluation \
   --skip-analysis
 
-3) Generate only templates:
+3) Generate only templates
 python -m src.generator templates \
   --job "Data Analyst" \
   --language English \
@@ -141,58 +147,48 @@ python -m src.generator templates \
   --model gpt-4o-mini \
   --reset
 
-4) Generate only variants:
+4) Generate only variants
 python -m src.generator variants \
   --provider openai \
   --model gpt-4o-mini \
   --scenario single_attribute \
   --reset
 
-5) Build sessions:
+5) Build sessions
 python -m src.session_builder \
   --prompts neutral_v1 strict_merit_v1 role_specific_v1 \
   --replicates 3
 
-6) Evaluate sessions:
+6) Evaluate sessions
 python -m src.evaluator \
   --provider openai \
   --model gpt-4o-mini \
   --concurrency 5
 
-7) Analyze results:
+7) Analyze results
 python -m src.analysis
 
-Preview commands:
------------------
+Preview commands
+----------------
 Preview a specific CV:
 python -m src.preview --cv-id cv_xxxxxxxxxxxx
 
 Preview a random CV:
 python -m src.preview --random
 
-Preview a specific session:
+Preview a specific evaluated session result:
 python -m src.session_preview --session-id sess_xxxxxxxxxxxx
 
-Preview a random session:
+Preview a random evaluated session result:
 python -m src.session_preview --random
 
-Important implementation notes:
--------------------------------
-- The pipeline now supports generation without forced evaluation
-- The main reset logic is intended to clear both data and outputs
+Important implementation notes
+------------------------------
+- The pipeline supports generation without forced evaluation
+- The main reset logic clears both data and outputs
 - Analysis should be run on the current dataset, not on stale historical leftovers
 - Evaluation prompts are experimental conditions, not duplicate files
+- CV preview and session result preview are separate by design
+- src.session_preview is not a pre-evaluation session visualizer; it is a post-evaluation result preview tool
 - If scores become suspiciously repetitive again, inspect the evaluation prompts first
-- If results reference CV IDs missing from variants.jsonl, the first thing to check is whether an old run was mixed into the current state
-
-About evaluate.txt:
--------------------
-The evaluator currently uses prompts named:
-prompts/evaluate_<prompt_id>.txt
-
-That means the active prompt files are:
-- evaluate_neutral_v1.txt
-- evaluate_strict_merit_v1.txt
-- evaluate_role_specific_v1.txt
-
-If evaluate.txt is not used anywhere in the workflow, it can be removed later to reduce confusion.
+- If results reference CV IDs missing from variants.jsonl, first check whether an old run was mixed into the current state

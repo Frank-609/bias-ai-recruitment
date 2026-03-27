@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 from pathlib import Path
 from typing import Iterable
 
@@ -12,7 +13,34 @@ DATA_DIR = ROOT / 'data'
 OUTPUTS_DIR = ROOT / 'outputs'
 PROMPTS_DIR = ROOT / 'prompts'
 
-import shutil
+
+def bootstrap() -> None:
+    load_dotenv(ROOT / '.env', override=False)
+    ensure_project_dirs()
+
+
+def ensure_project_dirs() -> None:
+    for path in [
+        DATA_DIR,
+        OUTPUTS_DIR,
+        OUTPUTS_DIR / 'raw',
+        OUTPUTS_DIR / 'parsed',
+        OUTPUTS_DIR / 'figures',
+        OUTPUTS_DIR / 'preview_pdfs',
+        OUTPUTS_DIR / 'session_previews',
+        PROMPTS_DIR,
+    ]:
+        path.mkdir(parents=True, exist_ok=True)
+
+    for file_path in [
+        DATA_DIR / 'templates.jsonl',
+        DATA_DIR / 'variants.jsonl',
+        DATA_DIR / 'sessions.jsonl',
+        OUTPUTS_DIR / 'results.jsonl',
+    ]:
+        if not file_path.exists():
+            file_path.write_text('', encoding='utf-8')
+
 
 def clear_directory(path: Path) -> None:
     if not path.exists():
@@ -23,6 +51,12 @@ def clear_directory(path: Path) -> None:
         elif child.is_dir():
             shutil.rmtree(child)
 
+
+def reset_file(path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text('', encoding='utf-8')
+
+
 def reset_pipeline_state(
     reset_templates: bool = True,
     reset_variants: bool = True,
@@ -31,7 +65,8 @@ def reset_pipeline_state(
     reset_raw: bool = True,
     reset_parsed: bool = True,
     reset_figures: bool = True,
-    reset_preview_pdfs: bool = False,
+    reset_preview_pdfs: bool = True,
+    reset_session_previews: bool = True,
     reset_metrics: bool = True,
 ) -> None:
     if reset_templates:
@@ -50,37 +85,12 @@ def reset_pipeline_state(
         clear_directory(OUTPUTS_DIR / 'figures')
     if reset_preview_pdfs:
         clear_directory(OUTPUTS_DIR / 'preview_pdfs')
+    if reset_session_previews:
+        clear_directory(OUTPUTS_DIR / 'session_previews')
     if reset_metrics:
         metrics_path = OUTPUTS_DIR / 'metrics.json'
         if metrics_path.exists():
             metrics_path.unlink()
-            
-            
-def bootstrap() -> None:
-    load_dotenv(ROOT / '.env', override=False)
-    ensure_project_dirs()
-
-
-def ensure_project_dirs() -> None:
-    for path in [
-        DATA_DIR,
-        OUTPUTS_DIR,
-        OUTPUTS_DIR / 'raw',
-        OUTPUTS_DIR / 'parsed',
-        OUTPUTS_DIR / 'figures',
-        OUTPUTS_DIR / 'preview_pdfs',
-        PROMPTS_DIR,
-    ]:
-        path.mkdir(parents=True, exist_ok=True)
-
-    for file_path in [
-        DATA_DIR / 'templates.jsonl',
-        DATA_DIR / 'variants.jsonl',
-        DATA_DIR / 'sessions.jsonl',
-        OUTPUTS_DIR / 'results.jsonl',
-    ]:
-        if not file_path.exists():
-            file_path.write_text('', encoding='utf-8')
 
 
 def read_jsonl(path: Path) -> list[dict]:
@@ -107,11 +117,6 @@ def append_jsonl(path: Path, records: Iterable[dict]) -> None:
     with path.open('a', encoding='utf-8') as f:
         for record in records:
             f.write(json.dumps(record, ensure_ascii=False) + '\n')
-
-
-def reset_file(path: Path) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text('', encoding='utf-8')
 
 
 def normalize_cli_list(values: list[str] | None, default: list[str] | None = None) -> list[str]:
